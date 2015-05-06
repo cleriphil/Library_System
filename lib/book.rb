@@ -52,9 +52,6 @@ class Book
     @title = result.first().fetch("title")
     Book.new({:title => @title, :author => @author, :id => @id})
   end
-
-
-
   define_method(:update) do |attributes|
     @title = attributes.fetch(:title, @title)
     @author = attributes.fetch(:author, @author)
@@ -66,5 +63,7 @@ class Book
       DB.exec("UPDATE book SET author = '#{@author}' WHERE id = #{@id};")
     end
   end
-
+  define_method(:delete) do
+    DB.exec("DELETE FROM book WHERE id = #{self.id()};")
+  end
 end
