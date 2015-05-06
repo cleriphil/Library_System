@@ -55,10 +55,16 @@ class Book
 
 
 
-  # define_method(:update) do |attributes|
-  #   @title = attributes.fetch(:title, @title)
-  #   @id = self.id
-  #   DB.exec("UPDATE book SET name = '#{@name}' WHERE id = #{@id};")
-  # end
+  define_method(:update) do |attributes|
+    @title = attributes.fetch(:title, @title)
+    @author = attributes.fetch(:author, @author)
+    @id = self.id
+    if @title.!=(self.title())
+      DB.exec("UPDATE book SET title = '#{@title}' WHERE id = #{@id};")
+    end
+    if @author.!=(self.author())
+      DB.exec("UPDATE book SET author = '#{@author}' WHERE id = #{@id};")
+    end
+  end
 
 end

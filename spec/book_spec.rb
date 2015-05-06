@@ -62,4 +62,12 @@ describe(Book) do
       expect(test_book.author()).to(eq("Dr. Suess"))
     end
   end
+  describe('#delete') do
+    it('lets you delete a book from the database') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil})
+      test_book.save()
+      test_book.delete()
+      expect(Book.all()).to(eq([]))
+    end
+  end
 end
