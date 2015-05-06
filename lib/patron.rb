@@ -22,4 +22,16 @@ attr_reader(:name, :id)
   define_method(:==) do |another_patron|
     self.name().==(another_patron.name()).&(self.id().to_i().==(another_patron.id().to_i()))
   end
+  define_singleton_method(:find) do |id|
+    @id = id
+    results = DB.exec("SELECT * FROM patron WHERE id = #{@id}")
+    @name = results.first().fetch('name')
+    Patron.new({:name => @name, :id => @id})
+  end
+
+  define_method(:update) do |attributes|
+    @name = attributes.fetch(:name, @name)
+    @id = self.id()
+    DB.exec("UPDATE patron SET name = '#{@name}' WHERE id = #{@id}")
+  end
 end
