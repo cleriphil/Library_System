@@ -1,11 +1,12 @@
 class Book
 
-  attr_reader(:author, :title, :id)
+  attr_reader(:author, :title, :id, :copy_id)
 
   define_method(:initialize) do |attributes|
     @author = attributes.fetch(:author)
     @title = attributes.fetch(:title)
     @id = attributes.fetch(:id)
+    @copy_id = attributes.fetch(:copy_id)
   end
 
   define_singleton_method(:all) do
@@ -15,13 +16,14 @@ class Book
       title = book.fetch("title")
       author = book.fetch("author")
       id = book.fetch("id")
-      books.push(Book.new({:title => title, :author => author, :id => id}))
+      copy_id = book.fetch('copy_id')
+      books.push(Book.new({:title => title, :author => author, :id => id, :copy_id => copy_id}))
     end
     books
   end
 
   define_method(:save) do
-    result = DB.exec("INSERT INTO book (title, author) VALUES ('#{@title}', '#{@author}') RETURNING id;")
+    result = DB.exec("INSERT INTO book (title, author, copy_id) VALUES ('#{@title}', '#{@author}, '#{@copy_id}'') RETURNING id;")
     @id = result.first().fetch("id").to_i()
   end
 
@@ -34,7 +36,8 @@ class Book
     result = DB.exec("SELECT * FROM book WHERE id = #{@id}")
     @title = result.first().fetch("title")
     @author = result.first().fetch("author")
-    Book.new({:title => @title, :author => @author, :id => @id})
+    @copy_id =  result.first().fetch("copy_id")
+    Book.new({:title => @title, :author => @author, :id => @id, :copy_id => @copy_id})
   end
 
   define_singleton_method(:find_by_title) do |title|
@@ -42,7 +45,8 @@ class Book
     result = DB.exec("SELECT * FROM book WHERE title = '#{@title}'")
     @id = result.first().fetch("id")
     @author = result.first().fetch("author")
-    Book.new({:title => @title, :author => @author, :id => @id})
+    @copy_id =  result.first().fetch("copy_id")
+    Book.new({:title => @title, :author => @author, :id => @id, :copy_id => @copy_id})
   end
 
   define_singleton_method(:find_by_author) do |author|
@@ -50,12 +54,14 @@ class Book
     result = DB.exec("SELECT * FROM book WHERE author = '#{@author}'")
     @id = result.first().fetch("id")
     @title = result.first().fetch("title")
-    Book.new({:title => @title, :author => @author, :id => @id})
+    @copy_id =  result.first().fetch("copy_id")
+    Book.new({:title => @title, :author => @author, :id => @id, :copy_id => @copy_id})
   end
 
   define_method(:update) do |attributes|
     @title = attributes.fetch(:title, @title)
     @author = attributes.fetch(:author, @author)
+    @copy_id = attributes.fetch(:copy_id, @copy_id)
     @id = self.id
     if @title.!=(self.title())
       DB.exec("UPDATE book SET title = '#{@title}' WHERE id = #{@id};")
@@ -63,22 +69,27 @@ class Book
     if @author.!=(self.author())
       DB.exec("UPDATE book SET author = '#{@author}' WHERE id = #{@id};")
     end
+    if @copy_id.!=(self.copy_id())
+      DB.exec("UPDATE book SET author = '#{@copy_id}' WHERE id = #{@id};")
+    end
   end
 
   define_method(:delete) do
     DB.exec("DELETE FROM book WHERE id = #{self.id()};")
   end
 
-  define_method(:make_copy) do
-    result = DB.exec("INSERT INTO copies (book_id) VALUES ('#{self.id()}')")
-  end
+  # define_method(:make_copy) do
+  #   result = DB.exec("INSERT INTO copies (book_id) VALUES ('#{self.id()}')")
+  # end
+  #
+  # define_method(:copies) do
+  #   returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
+  #   copies = []
+  #   returned_copies.each() do |copy|
+  #     copy_id = copy.fetch("id")
+  #     copies.push(Book.new({:title => title, :author => author, :id => id, :copy_id => copy_id}))
+  #   end
+  #   copies
+  # end
 
-  define_method(:copies) do
-    returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
-    index = 0
-    returned_copies.each() do |copy|
-      index = index + 1
-    end
-    index
-  end
 end
