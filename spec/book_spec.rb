@@ -52,4 +52,14 @@ describe(Book) do
       expect(Book.find_by_author(test_book.author())).to(eq(test_book))
     end
   end
+  describe('#update') do
+    it('lets you update books in the database') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil})
+      test_book.save()
+      test_book.update({:title => "The giving tree"})
+      expect(test_book.title()).to(eq("The giving tree"))
+      test_book.update({:author => "Dr. Suess"})
+      expect(test_book.author()).to(eq("Dr. Suess"))
+    end
+  end
 end
