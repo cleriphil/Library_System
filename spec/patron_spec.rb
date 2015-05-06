@@ -41,4 +41,13 @@ describe(Patron) do
       expect(test_patron.name()).to(eq("Sandra"))
     end
   end
+
+  describe('#delete') do
+    it('deletes a patron from the database') do
+      test_patron = Patron.new({:name => "Samnson", :id => nil})
+      test_patron.save()
+      test_patron.delete()
+      expect(Patron.all()).to(eq([]))
+    end
+  end
 end
