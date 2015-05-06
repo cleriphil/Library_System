@@ -7,6 +7,7 @@ class Book
     @title = attributes.fetch(:title)
     @id = attributes.fetch(:id)
   end
+
   define_singleton_method(:all) do
     returned_books = DB.exec("SELECT * FROM book;")
     books = []
@@ -18,13 +19,39 @@ class Book
     end
     books
   end
-    define_method(:save) do
-      result = DB.exec("INSERT INTO book (title, author) VALUES ('#{@title}', '#{@author}') RETURNING id;")
-      @id = result.first().fetch("id").to_i()
-    end
-    define_method(:==) do |another_book|
-      self.title().==(another_book.title()).&(self.id().to_i().==(another_book.id().to_i())).&(self.author().==(another_book.author()))
-    end
+
+  define_method(:save) do
+    result = DB.exec("INSERT INTO book (title, author) VALUES ('#{@title}', '#{@author}') RETURNING id;")
+    @id = result.first().fetch("id").to_i()
+  end
+
+  define_method(:==) do |another_book|
+    self.title().==(another_book.title()).&(self.id().to_i().==(another_book.id().to_i())).&(self.author().==(another_book.author()))
+  end
+
+  define_singleton_method(:find_by_id) do |id|
+    @id = id
+    result = DB.exec("SELECT * FROM book WHERE id = #{@id}")
+    @title = result.first().fetch("title")
+    @author = result.first().fetch("author")
+    Book.new({:title => @title, :author => @author, :id => @id})
+  end
+
+  define_singleton_method(:find_by_title) do |title|
+    @title = title
+    result = DB.exec("SELECT * FROM book WHERE title = '#{@title}'")
+    @id = result.first().fetch("id")
+    @author = result.first().fetch("author")
+    Book.new({:title => @title, :author => @author, :id => @id})
+  end
+
+  define_singleton_method(:find_by_author) do |author|
+    @author = author
+    result = DB.exec("SELECT * FROM book WHERE author = '#{@author}'")
+    @id = result.first().fetch("id")
+    @title = result.first().fetch("title")
+    Book.new({:title => @title, :author => @author, :id => @id})
+  end
 
 
 end

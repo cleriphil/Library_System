@@ -31,4 +31,25 @@ describe(Book) do
       expect(Book.all()).to(eq([test_book]))
     end
   end
+  describe('.find_by_id') do
+    it('finds the book by its id') do
+      test_book = Book.new({:title => "Welcome to the neighborhood", :author => "Mr. Rogers", :id => 1})
+      test_book.save()
+      expect(Book.find_by_id(test_book.id())).to(eq(test_book))
+    end
+  end
+  describe('.find_by_title') do
+    it('finds the book by its title') do
+      test_book = Book.new({:title => "Welcome to the neighborhood", :author => "Mr. Rogers", :id => 1})
+      test_book.save()
+      expect(Book.find_by_title(test_book.title())).to(eq(test_book))
+    end
+  end
+  describe('.find_by_author') do
+    it('finds the book by its author') do
+      test_book = Book.new({:title => "Welcome to the neighborhood", :author => "Mr. Rogers", :id => 1})
+      test_book.save()
+      expect(Book.find_by_author(test_book.author())).to(eq(test_book))
+    end
+  end
 end
