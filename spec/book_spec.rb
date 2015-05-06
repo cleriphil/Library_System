@@ -70,4 +70,21 @@ describe(Book) do
       expect(Book.all()).to(eq([]))
     end
   end
+  describe('#make_copy') do
+    it('lets you make a copy of a book') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil})
+      test_book.save()
+      test_book.make_copy()
+      expect(test_book.copies()).to(eq(1))
+    end
+  end
+  describe('#copies') do
+    it('lets you see the copies of a book') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil})
+      test_book.save()
+      test_book.make_copy()
+      test_book.make_copy()
+      expect(test_book.copies()).to(eq(2))
+    end
+  end
 end

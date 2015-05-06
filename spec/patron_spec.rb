@@ -50,4 +50,15 @@ describe(Patron) do
       expect(Patron.all()).to(eq([]))
     end
   end
+  describe('#check_out') do
+    it('allows a patron to check out a book') do
+      test_patron = Patron.new({:name => "Samnson", :id => nil})
+      test_patron.save()
+      test_book = Book.new({:title => "Birds", :author => "Joe", :id => nil})
+      test_book.save()
+      test_book.make_copy()
+      test_patron.check_out(test_book)
+      expect(test_book.copies()).to(eq(0))
+    end
+  end
 end

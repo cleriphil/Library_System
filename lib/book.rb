@@ -68,4 +68,17 @@ class Book
   define_method(:delete) do
     DB.exec("DELETE FROM book WHERE id = #{self.id()};")
   end
+
+  define_method(:make_copy) do
+    result = DB.exec("INSERT INTO copies (book_id) VALUES ('#{self.id()}')")
+  end
+
+  define_method(:copies) do
+    returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
+    index = 0
+    returned_copies.each() do |copy|
+      index = index + 1
+    end
+    index
+  end
 end

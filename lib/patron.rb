@@ -34,4 +34,17 @@ attr_reader(:name, :id)
     @id = self.id()
     DB.exec("UPDATE patron SET name = '#{@name}' WHERE id = #{@id}")
   end
+  define_method(:delete) do
+    DB.exec("DELETE FROM patron WHERE id = #{self.id};")
+  end
+  define_method(:check_out) do |book|
+    if book.copies().==(0)
+    else
+      copies = book.copies() - 1
+      DB.exec("DELETE FROM copies WHERE book_id = '#{book.id()}'")
+      copies.times() do |copy|
+        DB.exec("INSERT INTO copies (book_id) VALUES (#{book.id})")
+      end
+    end
+  end
 end
