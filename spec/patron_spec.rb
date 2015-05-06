@@ -26,4 +26,11 @@ describe(Patron) do
     expect(Patron.all()).to(eq([test_patron]))
     end
   end
+  describe('.find') do
+    it('returns the patron by his/her id') do
+    test_patron = Patron.new({:name => "Johnny", :id => nil})
+    test_patron.save()
+    expect(Patron.find(test_patron.id())).to(eq(test_patron))
+    end
+  end
 end
