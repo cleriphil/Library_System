@@ -23,7 +23,7 @@ class Book
   end
 
   define_method(:save) do
-    result = DB.exec("INSERT INTO book (title, author, copy_id) VALUES ('#{@title}', '#{@author}, '#{@copy_id}'') RETURNING id;")
+    result = DB.exec("INSERT INTO book (title, author, copy_id) VALUES ('#{@title}', '#{@author}', #{@copy_id}) RETURNING id;")
     @id = result.first().fetch("id").to_i()
   end
 
