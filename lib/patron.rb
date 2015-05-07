@@ -22,6 +22,7 @@ attr_reader(:name, :id)
   define_method(:==) do |another_patron|
     self.name().==(another_patron.name()).&(self.id().to_i().==(another_patron.id().to_i()))
   end
+
   define_singleton_method(:find) do |id|
     @id = id
     results = DB.exec("SELECT * FROM patron WHERE id = #{@id};")
@@ -47,9 +48,8 @@ attr_reader(:name, :id)
     end
     copy_to_delete = copy_ids[-1]
     DB.exec("DELETE FROM copies WHERE id = #{copy_to_delete}")
-
-    DB.exec("INSERT INTO check_out (patron_id, copy_id, book_id) VALUES (#{self.
-    id()}, #{@copy_id}, #{book.id()});")
+    due_date = Time.new().+(1209600)
+    DB.exec("INSERT INTO check_out (patron_id, copy_id, book_id, due) VALUES (#{self.id()}, #{@copy_id}, #{book.id()}, '#{due_date.month()}#{'-'}#{due_date.day()}#{'-'}#{due_date.year()}');")
   end
 
   define_method(:history) do
@@ -61,5 +61,17 @@ attr_reader(:name, :id)
     end
     check_outs
   end
+  define_method(:due) do |book|
+    returned_check_outs = DB.exec("SELECT * FROM check_out WHERE patron_id = #{self.id()};")
+    # binding.pry
 
+    due_dates = []
+    returned_check_outs.each() do |check_out|
+      if check_out.fetch('book_id').to_i().==(book.id())
+        due_date = check_out.fetch('due')
+        due_dates.push(due_date)
+      end
+    end
+    due_dates
+  end
 end

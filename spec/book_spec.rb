@@ -81,5 +81,17 @@ describe(Book) do
       expect(test_book.all_copies()).to(eq([test_book, test_book]))
     end
   end
+  describe('.overdue') do
+    it('returns an array of overdue books') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil, :copy_id => 0})
+      test_book.save()
+      test_book.make_copy()
+      test_patron = Patron.new({:name => "Samnson", :id => nil})
+      test_patron.save()
+      test_patron.check_out(test_book)
+      DB.exec("UPDATE check_out SET due = '4-4-2014' where patron_id = #{test_patron.id()};")
+      expect(Book.overdue()).to(eq([test_book]))
+    end
+  end
 
 end

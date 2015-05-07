@@ -86,7 +86,7 @@ describe(Patron) do
         test_book.make_copy()
         test_book.make_copy()
         test_patron.check_out(test_book)
-        expect(test_patron.due(test_book)).to(eq(Time.now().+(1209600)))
+        expect(test_patron.due(test_book)).to(eq(["5-21-2015"]))  # <----- static date
 
       end
     end

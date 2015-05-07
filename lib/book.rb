@@ -90,12 +90,39 @@ class Book
 
   define_method(:make_copy) do
     DB.exec("INSERT INTO copies (book_id) VALUES (#{self.id()});")
+  end
 
+  define_singleton_method(:overdue) do
+    returned_checkouts = DB.exec("SELECT * FROM check_out;")
+    today = Time.new()
+    tday = today.day()
+    tmonth = today.month()
+    tyear = today.year()
+    due_array = []
+    due_final = []
+    returned_checkouts.each() do |check_out|
 
-    # returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
-    # returned_copies.each() do |copy|
-    #   copy_id = copy.fetch("id")
-    #   self.update({:copy_id => id})
-    # end
+      @book_id = check_out.fetch('book_id')
+      @book_id = @book_id.to_i()
+binding.pry
+      @new_book = Book.find_by_id(@book_id)
+      due = check_out.fetch('due')
+
+      due_array.push(due)
+      due_array.each() do |date|
+
+        test_date = date.split()
+        test_date = test_date[0].split('-')
+
+        if tyear.>((test_date[0]).to_i())
+          due_final.push(@new_book)
+        elsif tmonth.>((test_date[1]).to_i())
+          due_final.push(@new_book)
+        else tday.>((test_date[2]).to_i())
+          due_final.push(@new_book)
+        end
+      end
+    end
+    due_final
   end
 end
