@@ -38,4 +38,15 @@ attr_reader(:name, :id)
     DB.exec("DELETE FROM patron WHERE id = #{self.id};")
   end
 
+  define_method(:check_out) do |book|
+    returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = #{book.id()}")
+    copy_ids = []
+    returned_copies.each() do |copy|
+      copy_id =  copy.fetch('id')
+      copy_ids.push(copy_id)
+    end
+    copy_to_delete = copy_ids[0]
+    DB.exec("DELETE FROM copies WHERE id = #{copy_to_delete}")
+    DB.exec("INSERT INTO check_out (patron_id, copy_id) VALUES (#{self.id()}, #{book.copy_id()})")
+  end
 end

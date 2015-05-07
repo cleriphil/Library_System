@@ -70,13 +70,14 @@ class Book
       DB.exec("UPDATE book SET author = '#{@author}' WHERE id = #{@id};")
     end
     if @copy_id.!=(self.copy_id())
-      DB.exec("UPDATE book SET author = '#{@copy_id}' WHERE id = #{@id};")
+      DB.exec("UPDATE book SET copy_id = '#{@copy_id}' WHERE id = #{@id};")
     end
   end
 
   define_method(:delete) do
     DB.exec("DELETE FROM book WHERE id = #{self.id()};")
   end
+
   define_method(:all_copies) do
     returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
     copies = []
@@ -86,7 +87,13 @@ class Book
     end
     copies
   end
+
   define_method(:make_copy) do
     DB.exec("INSERT INTO copies (book_id) VALUES (#{self.id()});")
+    # returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
+    # returned_copies.each() do |copy|
+    #   copy_id = copy.fetch("id")
+    #   self.update({:copy_id => id})
+    # end
   end
 end
