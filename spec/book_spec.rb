@@ -70,4 +70,16 @@ describe(Book) do
       expect(Book.all()).to(eq([]))
     end
   end
+
+  describe('#all_copies') do
+    it('creates an array containing how many copies are on hand') do
+      test_book = Book.new({:title => "Where the sidewalk ends", :author => "Shel Silverstine", :id => nil, :copy_id => 0})
+      test_book.save()
+      2.times() do
+        test_book.make_copy()
+      end
+      expect(test_book.all_copies()).to(eq([test_book, test_book]))
+    end
+  end
+
 end
