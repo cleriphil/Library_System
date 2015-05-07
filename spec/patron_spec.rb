@@ -61,4 +61,33 @@ describe(Patron) do
       expect(test_book.all_copies()).to(eq([]))
     end
   end
+    describe('#history') do
+      it('allows a patron to view their check out history') do
+        test_patron = Patron.new({:name => "Samnson", :id => nil})
+        test_patron.save()
+        test_book = Book.new({:title => "Birds", :author => "Joe", :id => nil, :copy_id => 0})
+        test_book.save()
+        test_book_2 = Book.new({:title => "Animals", :author => "Zebra", :id => nil, :copy_id => 0})
+        test_book_2.save()
+        test_book_2.make_copy()
+        test_book_2.make_copy()
+        test_book.make_copy()
+        test_patron.check_out(test_book_2)
+        test_patron.check_out(test_book_2)
+        expect(test_patron.history()).to(eq([test_book_2, test_book_2]))
+      end
+    end
+    describe('#due') do
+      it('returns the due date for a book') do
+        test_patron = Patron.new({:name => "Samnson", :id => nil})
+        test_patron.save()
+        test_book = Book.new({:title => "Birds", :author => "Joe", :id => nil, :copy_id => 0})
+        test_book.save()
+        test_book.make_copy()
+        test_book.make_copy()
+        test_patron.check_out(test_book)
+        expect(test_patron.due(test_book)).to(eq(Time.now().+(1209600)))
+
+      end
+    end
 end

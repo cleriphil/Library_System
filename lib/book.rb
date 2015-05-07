@@ -33,7 +33,7 @@ class Book
 
   define_singleton_method(:find_by_id) do |id|
     @id = id
-    result = DB.exec("SELECT * FROM book WHERE id = #{@id}")
+    result = DB.exec("SELECT * FROM book WHERE id = #{@id};")
     @title = result.first().fetch("title")
     @author = result.first().fetch("author")
     @copy_id =  result.first().fetch("copy_id")
@@ -42,7 +42,7 @@ class Book
 
   define_singleton_method(:find_by_title) do |title|
     @title = title
-    result = DB.exec("SELECT * FROM book WHERE title = '#{@title}'")
+    result = DB.exec("SELECT * FROM book WHERE title = '#{@title}';")
     @id = result.first().fetch("id")
     @author = result.first().fetch("author")
     @copy_id =  result.first().fetch("copy_id")
@@ -51,7 +51,7 @@ class Book
 
   define_singleton_method(:find_by_author) do |author|
     @author = author
-    result = DB.exec("SELECT * FROM book WHERE author = '#{@author}'")
+    result = DB.exec("SELECT * FROM book WHERE author = '#{@author}';")
     @id = result.first().fetch("id")
     @title = result.first().fetch("title")
     @copy_id =  result.first().fetch("copy_id")
@@ -79,7 +79,7 @@ class Book
   end
 
   define_method(:all_copies) do
-    returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
+    returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}';")
     copies = []
     returned_copies.each() do |copy|
       copy_id = copy.fetch("id")
@@ -90,6 +90,8 @@ class Book
 
   define_method(:make_copy) do
     DB.exec("INSERT INTO copies (book_id) VALUES (#{self.id()});")
+
+
     # returned_copies = DB.exec("SELECT * FROM copies WHERE book_id = '#{self.id()}'")
     # returned_copies.each() do |copy|
     #   copy_id = copy.fetch("id")
